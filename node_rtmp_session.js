@@ -1002,10 +1002,19 @@ class NodeRtmpSession {
       }
     }
 
-    if (context.publishers.has(this.publishStreamPath)) {
+  
+  	if (context.publishers.has(this.publishStreamPath)) {
       Logger.log(`[rtmp publish] Already has a stream. id=${this.id} streamPath=${this.publishStreamPath} streamId=${this.publishStreamId}`);
-      this.sendStatusMessage(this.publishStreamId, 'error', 'NetStream.Publish.BadName', 'Stream already publishing');
-    } else if (this.isPublishing) {
+      //this.sendStatusMessage(this.publishStreamId, 'error', 'NetStream.Publish.BadName', 'Stream already publishing');
+      context.sessions.forEach((session, id) => {
+        if (this.id != session.id){
+          session.stop();
+        }
+      });
+    }
+    
+
+   if (this.isPublishing) {
       Logger.log(`[rtmp publish] NetConnection is publishing. id=${this.id} streamPath=${this.publishStreamPath} streamId=${this.publishStreamId}`);
       this.sendStatusMessage(this.publishStreamId, 'error', 'NetStream.Publish.BadConnection', 'Connection already publishing');
     } else {
